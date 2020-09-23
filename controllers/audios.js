@@ -1,20 +1,20 @@
 
 const path = require('path');
 const fs = require('fs');
-const Cancion = require('../models/canciones');
+const Audios = require('../models/audios');
 const audioLoader = require('audio-loader');
 const validator = require('validator');
 
 
-let canciones = {
+let audios = {
 
     ruta: {
-    absoluta: '../canciones/'
+    absoluta: '../audios/'
   },
 
   compruebaRuta: (req, res) => {
 
-    let rutaAbsoluta = canciones.ruta.absoluta;
+    let rutaAbsoluta = audios.ruta.absoluta;
     let nombreCarpeta = req.body.autor;
 
     var rutaRelativa = rutaAbsoluta + '/' + nombreCarpeta;
@@ -51,7 +51,7 @@ let canciones = {
     var validaAutor = !validator.isEmpty(datos.autor);
     var validaTipo = !validator.isEmpty(datos.tipo);
 
-    let rutaCancion = `${canciones.ruta.absoluta}${datos.autor}/${datos.nombre}.mp3`;
+    let rutaCancion = `${audios.ruta.absoluta}${datos.autor}/${datos.nombre}.mp3`;
 
     if (fs.existsSync(rutaCancion)) {
       fs.unlink(archivo.path, (err)=>{
@@ -77,7 +77,7 @@ let canciones = {
         if (archivo.type == 'audio/mpeg') {
           fs.rename(archivo.path, rutaCancion, () => {
 
-            let audio = new Cancion();
+            let audio = new Audios();
 
             audioLoader(rutaCancion).then((song) => {
               let duracion = song.duration;
@@ -96,10 +96,10 @@ let canciones = {
               });
 
 
-            });
+            }); 
             return res.status(200).send({
               status: 'success',
-              mensaje: 'Cancion agregada'
+              mensaje: 'Audio agregada'
             });
           });
 
@@ -133,14 +133,14 @@ let canciones = {
     let busqueda = new RegExp(nombre, "i");
 
     if (nombre || nombre != undefined) {
-      query = Cancion.find({
+      query = Audios.find({
         $or: [
           { "autor": busqueda },
           { "nombre": busqueda }
         ]
       });
     } else {
-      query = Cancion.find();
+      query = Audios.find();
     }
 
     // console.log(`El nombre es ${nombre}`);
@@ -173,9 +173,6 @@ let canciones = {
     var id = req.params.id;
     var datos = req.body;
 
-    //console.log(req.params);
-    //console.log(req.body);
-
     try {
       var validarNombre = !validator.isEmpty(datos.nombre);
       var validarAutor = !validator.isEmpty(datos.autor);
@@ -190,7 +187,7 @@ let canciones = {
     }
 
     if (validarNombre && validarAutor && validarTipo) {
-      Cancion.findOneAndUpdate({ _id: id }, datos, { new: true }, (err, cancionModificado) => {
+      Audios.findOneAndUpdate({ _id: id }, datos, { new: true }, (err, cancionModificado) => {
         if (err) {
           return res.status(500).send({
             status: 'error',
@@ -204,11 +201,6 @@ let canciones = {
             mensaje: 'La cancion no existe!'
           });
         }
-
-        //Modificamos las carpetas correspondientes a la cancion modificada
-        /*let rutaModificacion = `${canciones.ruta.absoluta}`;
-        if(fs.existsSync())*/
-
 
         return res.status(200).send({
           status: 'success',
@@ -228,7 +220,7 @@ let canciones = {
   eliminar: (req, res) => {
     var id = req.params.id;
 
-    Cancion.findOneAndDelete({ _id: id }, (err, audioEliminado) => {
+    Audios.findOneAndDelete({ _id: id }, (err, audioEliminado) => {
       if (err) {
         return res.status(500).send({
           status: 'Error',
@@ -243,7 +235,7 @@ let canciones = {
         });
       }
 
-      let eliminacion = `${canciones.ruta.absoluta}${audioEliminado.autor}/${audioEliminado.nombre}.mp3`;
+      let eliminacion = `${audios.ruta.absoluta}${audioEliminado.autor}/${audioEliminado.nombre}.mp3`;
 
       if(fs.existsSync(eliminacion)) {
 
@@ -261,4 +253,4 @@ let canciones = {
   }
 }
 
-module.exports = canciones;
+module.exports = audios;

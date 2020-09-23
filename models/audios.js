@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
 
-let cancioneShema = schema({
+let AudiosSchema = schema({
     nombre: String,
     autor: String,
     tipo: String,
     duracion: String
 });
 
-module.exports = mongoose.model('Cancion', cancioneShema);
+module.exports = mongoose.model('Audios', AudiosSchema);

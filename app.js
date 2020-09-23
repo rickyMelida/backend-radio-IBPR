@@ -11,11 +11,11 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-let rutasCanciones  = require('./routes/canciones');
-let rutasReproductor = require('./routes/reproductor');
+let rutasAudios  = require('./routes/audios');
+let rutasPlaylist = require('./routes/playlist');
 
 //Agregar prefijos a rutas / cargar rutas
-app.use('/cancion', rutasCanciones);
-app.use('/reproductor', rutasReproductor);
+app.use('/audios', rutasAudios);
+app.use('/playlist', rutasPlaylist);
 
-module.exports = app;
+module.exports = app; 

@@ -1,7 +1,7 @@
 const validator = require('validator');
-const Reproductor = require('../models/reproductor');
-const { replaceOne } = require('../models/reproductor');
-let reproductor = {
+const { Playlist } = require('../models/playlist');
+
+let playlist = {
 
     test: (req, res) => {
         let datos = req.body;
@@ -14,33 +14,32 @@ let reproductor = {
     },
 
     agregar: (req, res) => {
-        let datos = req.body;
+        let datos = req;
 
-         console.log(datos);
+        console.log(datos.body);
 
-        if (datos.audios.length <= 1) {
-            //console.log('Si esta vacio');
+       /* if (datos.length <= 1) {
             res.status(400).send({
                 status: 'error',
                 mensaje: 'Necesita cargar canciones en el reproductor'
             })
         } else {
-            let reproduce = new Reproductor();
-            reproduce.fecha = datos.fecha;
+            let playlist = new Playlist();
+            playlist.nombre = datos.nombre;
 
-            for (var i = 0; i < datos.audios.length; i++) {
-                reproduce.audios.push({
-                    pos: datos.audios[i].pos,
-                    nombre: datos.audios[i].nombre,
-                    autor: datos.audios[i].autor,
-                    tipo: datos.audios[i].tipo,
-                    duracion: datos.audios[i].duracion,
-                    horaInicio: datos.audios[i].horaInicio,
-                    horaFin: datos.audios[i].horaFin
+            for (var i = 0; i < datos.length; i++) {
+                playlist.audios.push({
+                    pos: datos[i].pos,
+                    nombre: datos[i].nombre,
+                    autor: datos[i].autor,
+                    tipo: datos[i].tipo,
+                    duracion: datos[i].duracion,
+                    horaInicio: datos[i].horaInicio,
+                    horaFin: datos[i].horaFin
                 });
             }
 
-            reproduce.save((err, playlist) => {
+            playlist.save((err, playlist) => {
                 if (err || !playlist) {
                     res.status(500).send({
                         status: 'error',
@@ -56,7 +55,7 @@ let reproductor = {
             })
 
             console.log(`No, no esta vacio y la longitud es ${datos.length}`);
-        }
+        }*/
         
 
     },
@@ -65,9 +64,9 @@ let reproductor = {
 
         let fecha = req.params.fecha;
 
-        let query = Reproductor.find({ fecha: fecha });
+        let query = Playlist.find({ fecha: fecha });
 
-        query.sort('_id').exec((err, canciones) => {
+        query.sort('_id').exec((err, audios) => {
 
             if (err) {
                 return res.status(500).send({
@@ -76,7 +75,7 @@ let reproductor = {
                 });
             }
 
-            if (canciones.length == 0) {
+            if (audios.length == 0) {
                 return res.status(404).send({
                     status: 'error',
                     mensaje: 'No hay canciones para reproducir'
@@ -85,7 +84,7 @@ let reproductor = {
 
             return res.status(200).send({
                 status: 'success',
-                canciones
+                audios
             });
 
         })
@@ -98,4 +97,4 @@ let reproductor = {
     }
 }
 
-module.exports = reproductor;
+module.exports = playlist;
