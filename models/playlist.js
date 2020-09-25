@@ -4,6 +4,7 @@ const schema = mongoose.Schema;
 
 let playlistSchema = schema({
   nombre: String,
+  durTotal: Number,
   audios:
     [
       {
@@ -16,7 +17,6 @@ let playlistSchema = schema({
         horaFin: Number
       }
     ],
-  durTotal: Number
 });
 
 module.exports = mongoose.model('Playlist', playlistSchema);
