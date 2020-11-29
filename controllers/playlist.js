@@ -1,5 +1,5 @@
 const validator = require('validator');
-const { Playlist } = require('../models/playlist');
+const Playlist = require('../models/playlist');
 
 let playlist = {
 
@@ -14,28 +14,38 @@ let playlist = {
     },
 
     agregar: (req, res) => {
-        let datos = req;
+        let datos = req.body;
 
-        console.log(datos.body);
+        console.log(datos.audios[0].nombre);
 
-       /* if (datos.length <= 1) {
+        //console.log(`El nombre es ${datos.audios.nombre[2]}`);
+
+        if (datos.length <= 1) {
             res.status(400).send({
                 status: 'error',
                 mensaje: 'Necesita cargar canciones en el reproductor'
             })
         } else {
-            let playlist = new Playlist();
-            playlist.nombre = datos.nombre;
+          let playlist = new Playlist();
+          playlist.nombre = datos.nombre;
+          playlist.durTotal= datos.durTotal;
 
-            for (var i = 0; i < datos.length; i++) {
+          if (playlist.nombre === '' || playlist.nombre === 'undefinded') {
+            res.status(500).send({
+                status: 'error',
+                mensaje: 'Falta agregar el nombre de la Playlist'
+            });
+          } else {
+
+            for (var i = 0; i < datos.audios.length; i++) {
                 playlist.audios.push({
-                    pos: datos[i].pos,
-                    nombre: datos[i].nombre,
-                    autor: datos[i].autor,
-                    tipo: datos[i].tipo,
-                    duracion: datos[i].duracion,
-                    horaInicio: datos[i].horaInicio,
-                    horaFin: datos[i].horaFin
+                    pos: datos.audios[i].pos,
+                    nombre: datos.audios[i].nombre,
+                    autor: datos.audios[i].autor,
+                    tipo: datos.audios[i].tipo,
+                    duracion: datos.audios[i].duracion,
+                    horaInicio: datos.audios[i].horaInicio,
+                    horaFin: datos.audios[i].horaFin,
                 });
             }
 
@@ -53,18 +63,18 @@ let playlist = {
                     });
                 }
             })
+          }
 
-            console.log(`No, no esta vacio y la longitud es ${datos.length}`);
-        }*/
-        
+        }
+
 
     },
 
     ver: (req, res) => {
 
-        let fecha = req.params.fecha;
+        let nombre = req.params.nombre;
 
-        let query = Playlist.find({ fecha: fecha });
+        let query = Playlist.find({ nombre: nombre });
 
         query.sort('_id').exec((err, audios) => {
 
